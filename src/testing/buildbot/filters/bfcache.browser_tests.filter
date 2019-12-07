@@ -1,0 +1,26 @@
+# These tests currently fail when run with --enable-features=BackForwardCache
+
+# No focused view.
+-PaymentRequestShippingAddressEditorTest.FocusFirstInvalidField_NotName
+
+# Test are using a custom NavigateToURL function waiting for the old
+# RenderFrameHost to be deleted. This won't happen.
+-ProcessManagementTest.ExtensionProcessBalancing
+-ProcessManagerBrowserTest.NoBackgroundPage
+
+# Test goes back and forth in between a "preview" page and a "normal" page.
+# When going back to the first page, it expected to be loaded as a "normal" page,
+# but it isn't reloaded at all with the BackForwardCache.
+-PreviewsLitePageRedirectServerBrowserTest.LitePagePreviewsNavigation/*
+
+# Very flaky. Can't reproduce locally, it always succeed.
+-SystemNetworkContextManagerMaxConnectionsPerProxyBrowsertest.MaxConnectionsPerProxy
+
+# Flaky on the bots, need to be investigated, see https://crbug.com/1010870.
+-BookmarksCommandManagerTest.All
+
+# Time out since the removal of bfcache timed eviction. Probably waiting on the
+# RenderFrameHost deletion.
+-CredentialManagerBrowserTest.StoreInUnloadHandler_CrossSite_OnDemandMojoPipe
+-CredentialManagerBrowserTest.StoreInUnloadHandler_CrossSite_PreestablishedPipe
+

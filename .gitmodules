@@ -1,0 +1,3 @@
+[submodule "depot_tools"]
+	path = depot_tools
+	url = https://github.com/bingoli/depot_tools.git

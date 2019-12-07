@@ -1,0 +1,23 @@
+
+import("//build/config/compiler/compiler.gni")
+import("//build/config/features.gni")
+import("//build/config/sanitizers/sanitizers.gni")
+import("//build/config/ui.gni")
+import("//build/util/generate_wrapper.gni")
+
+
+group("examples") {
+  deps = [
+    ":strings_example",
+  ]
+}
+
+executable("strings_example") {
+  sources = [
+    "strings/main.cc",
+  ]
+
+  deps = [
+    "//base:base"
+  ]
+}
