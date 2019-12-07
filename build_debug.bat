@@ -21,7 +21,7 @@ echo %SOLUTION_PATH%
 
 IF NOT EXIST "%GN_PATH%" (
     echo Start updating submodule
-    call git submodule update
+    call git submodule update --init
     echo Finished updating submodule
 )
 
