@@ -5,7 +5,7 @@ SET SRC_DIR=%CD%\src
 SET DEPOT_TOOLS_PATH=%CUR_DIR%\depot_tools
 SET SOLUTION_RELATIVE_DIR=out\Default
 SET SOLUTION_PATH=%SRC_DIR%\%SOLUTION_RELATIVE_DIR%\all.sln
-SET GN_PATH=%DEPOT_TOOLS_PATH%\gn
+SET DEPOT_TOOLS_GIT_PATH=%DEPOT_TOOLS_PATH%\.git
 
 SET GYP_MSVS_VERSION=2019
 SET DEPOT_TOOLS_WIN_TOOLCHAIN=0
@@ -19,7 +19,7 @@ echo %PATH% | CALL findstr %DEPOT_TOOLS_PATH%; >nul && echo '' >nul || SET PATH=
 PUSHD %SRC_DIR%
 echo %SOLUTION_PATH%
 
-IF NOT EXIST "%GN_PATH%" (
+IF NOT EXIST "%DEPOT_TOOLS_GIT_PATH%" (
     echo Start updating submodule
     call git submodule update --init
     echo Finished updating submodule

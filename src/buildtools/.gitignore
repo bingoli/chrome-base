@@ -1,6 +1,6 @@
 *.pyc
 clang_format/script/
-third_party/libc++/trunk
+# third_party/libc++/trunk
 third_party/libc++abi/trunk
 third_party/libunwind/trunk
 linux64/clang-format
@@ -9,8 +9,8 @@ linux64/.versions
 mac/clang-format
 mac/gn
 mac/.versions
-win/clang-format.exe
-win/gn.exe
+# win/clang-format.exe
+# win/gn.exe
 win/.versions
 android/doclava/
 android/doclava.tar.gz
