@@ -9,12 +9,24 @@ import("//build/util/generate_wrapper.gni")
 group("examples") {
   deps = [
     ":strings_example",
+    ":process_cpu_example",
+
   ]
 }
 
 executable("strings_example") {
   sources = [
     "strings/main.cc",
+  ]
+
+  deps = [
+    "//base:base"
+  ]
+}
+
+executable("process_cpu_example") {
+  sources = [
+    "process/process_cpu_example.cc",
   ]
 
   deps = [
