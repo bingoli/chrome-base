@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <windows.h>
 
 #include "base/process/process_metrics.h"
@@ -6,17 +7,21 @@
 
 int main(int argc, char** argv) {
   
-  auto my_metrics = base::ProcessMetrics::CreateCurrentProcessMetrics();
+  int process_id = 0;
+  if (argc >= 2) {
+    process_id = std::stoi(std::string(argv[1]));
+  }
+
+  std::unique_ptr<base::ProcessMetrics> metrics;
+  if (process_id <= 0) {
+    metrics = base::ProcessMetrics::CreateCurrentProcessMetrics();
+  } else {
+    base::ProcessHandle process_handle = ::OpenProcess(PROCESS_ALL_ACCESS, FALSE, process_id);
+    metrics = base::ProcessMetrics::CreateProcessMetrics(process_handle);
+  }
 
   for (int i = 0; i < 10000; i++) {
-
-    for (int j = 0; j < 10000; j++) {
-      for (int k = 0; k < 10000; k++) {
-
-      }
-    }
-
-    double cpu_usage = my_metrics->GetPlatformIndependentCPUUsage();
+    double cpu_usage = metrics->GetPlatformIndependentCPUUsage();
     std::cout << cpu_usage << std::endl;
     Sleep(1000);
   }
