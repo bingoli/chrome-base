@@ -15,6 +15,7 @@ import("//build/config/ui.gni")
 import("//build/util/generate_wrapper.gni")
 
 group("gn_all") {
+  testonly = true
   deps = [
     "//examples",
   ]

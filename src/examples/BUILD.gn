@@ -7,6 +7,7 @@ import("//build/util/generate_wrapper.gni")
 
 
 group("examples") {
+  testonly = true
   deps = [
     ":strings_example",
     ":process_cpu_example",
@@ -15,21 +16,27 @@ group("examples") {
 }
 
 executable("strings_example") {
+  testonly = true
+
   sources = [
     "strings/main.cc",
   ]
 
   deps = [
-    "//base:base"
+    "//base:base",
+    "//base/test:test_support",
   ]
 }
 
 executable("process_cpu_example") {
+  testonly = true
+
   sources = [
     "process/process_cpu_example.cc",
   ]
 
   deps = [
-    "//base:base"
+    "//base:base",
+    "//base/test:test_support",
   ]
 }
