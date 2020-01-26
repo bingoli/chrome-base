@@ -11,7 +11,7 @@ group("examples") {
   deps = [
     ":strings_example",
     ":process_cpu_example",
-
+    ":thread_model_example",
   ]
 }
 
@@ -33,6 +33,19 @@ executable("process_cpu_example") {
 
   sources = [
     "process/process_cpu_example.cc",
+  ]
+
+  deps = [
+    "//base:base",
+    "//base/test:test_support",
+  ]
+}
+
+executable("thread_model_example") {
+  testonly = true
+
+  sources = [
+    "thread/thread_model_example.cc",
   ]
 
   deps = [
