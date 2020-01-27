@@ -5,36 +5,46 @@
 
 #include "base/at_exit.h"
 #include "base/command_line.h"
-#include "base/task/post_task.h"
+#include "base/files/file_util.h"
+#include "base/memory/scoped_refptr.h"
 #include "base/process/process_metrics.h"
 #include "base/process/process.h"
 #include "base/run_loop.h"
+#include "base/run_loop.h"
+#include "base/strings/utf_string_conversions.h"
 #include "base/task_runner.h"
+#include "base/task/post_task.h"
 #include "base/task/thread_pool/thread_pool_instance.h"
 #include "base/test/task_environment.h"
 #include "base/test/test_timeouts.h"
+#include "base/threading/thread_task_runner_handle.h"
 #include "base/threading/thread.h"
 
-void GetProcessCpuUsage(int process_id) {
-  std::unique_ptr<base::ProcessMetrics> metrics;
-  if (process_id <= 0) {
-    metrics = base::ProcessMetrics::CreateCurrentProcessMetrics();
-  } else {
-    base::ProcessHandle process_handle = ::OpenProcess(PROCESS_ALL_ACCESS, FALSE, process_id);
-    metrics = base::ProcessMetrics::CreateProcessMetrics(process_handle);
+
+void GetFileContentCallback(const std::string& contents) {
+  std::cout << "file contents : " << std::endl;
+  std::cout << contents.c_str() << std::endl;
+
+  base::RunLoop::QuitCurrentWhenIdleDeprecated();
+}
+
+void OpenFileInNewThread(
+    scoped_refptr<base::SingleThreadTaskRunner> ui_task_runner,
+    const base::FilePath& file_path) {
+  
+  std::string contents;
+  if (base::ReadFileToString(file_path, &contents)) {
+
   }
 
-  for (int i = 0; i < 10000; i++) {
-    double cpu_usage = metrics->GetPlatformIndependentCPUUsage();
-    std::cout << cpu_usage << std::endl;
-    Sleep(1000);
-  }
+  ui_task_runner->PostTask(FROM_HERE, base::BindOnce(GetFileContentCallback, contents));
+
 }
 
 int main(int argc, char** argv) {
-  int process_id = 0;
-  if (argc >= 2) {
-    process_id = std::stoi(std::string(argv[1]));
+  if (argc < 2) {
+    std::cout << "usage: thread_model_example.exe file" << std::endl;
+    return -1;
   }
 
   base::CommandLine::Init(argc, argv);
@@ -52,8 +62,9 @@ int main(int argc, char** argv) {
   if (!thread->Start())
     return 0;
 
-  thread->task_runner()->PostTask(FROM_HERE, base::BindOnce(GetProcessCpuUsage, process_id));
-
+  base::FilePath file_path(base::UTF8ToWide(argv[1]));
+  scoped_refptr<base::SingleThreadTaskRunner> ui_task_runner = base::ThreadTaskRunnerHandle::Get();
+  thread->task_runner()->PostTask(FROM_HERE, base::BindOnce(OpenFileInNewThread, ui_task_runner, file_path));
 
   base::RunLoop run_loop;
   run_loop.Run();
