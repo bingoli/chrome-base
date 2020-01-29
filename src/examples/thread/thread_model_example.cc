@@ -20,7 +20,22 @@
 #include "base/threading/thread_task_runner_handle.h"
 #include "base/threading/thread.h"
 
+#if 1
+void GetFileContentCallback(std::string* contents) {
+  std::cout << "file contents : " << std::endl;
+  std::cout << contents->c_str() << std::endl;
 
+  base::RunLoop::QuitCurrentWhenIdleDeprecated();
+}
+
+void OpenFileInNewThread(
+    const base::FilePath& file_path, std::string* contents) {
+  
+  if (base::ReadFileToString(file_path, contents)) {
+
+  }
+}
+#else
 void GetFileContentCallback(const std::string& contents) {
   std::cout << "file contents : " << std::endl;
   std::cout << contents.c_str() << std::endl;
@@ -40,6 +55,7 @@ void OpenFileInNewThread(
   ui_task_runner->PostTask(FROM_HERE, base::BindOnce(GetFileContentCallback, contents));
 
 }
+#endif
 
 int main(int argc, char** argv) {
   if (argc < 2) {
@@ -63,8 +79,16 @@ int main(int argc, char** argv) {
     return 0;
 
   base::FilePath file_path(base::UTF8ToWide(argv[1]));
+
+#if 1
+  std::string* contents = new std::string();
+  thread->task_runner()->PostTaskAndReply(FROM_HERE,
+    base::BindOnce(OpenFileInNewThread, file_path, contents),
+    base::BindOnce(GetFileContentCallback, base::Owned(contents)));
+#else
   scoped_refptr<base::SingleThreadTaskRunner> ui_task_runner = base::ThreadTaskRunnerHandle::Get();
   thread->task_runner()->PostTask(FROM_HERE, base::BindOnce(OpenFileInNewThread, ui_task_runner, file_path));
+#endif
 
   base::RunLoop run_loop;
   run_loop.Run();
